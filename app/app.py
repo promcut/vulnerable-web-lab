@@ -5,12 +5,6 @@ from db import get_db_connection
 
 app = Flask(__name__)
 
-# Configuración DB desde variables de entorno
-DB_HOST = os.environ.get("DB_HOST", "db")
-DB_USER = os.environ.get("DB_USER", "root")
-DB_PASS = os.environ.get("DB_PASS", "rootpass")
-DB_NAME = os.environ.get("DB_NAME", "vulnerable_lab")
-
 @app.route("/") # para probar que la conexión funciona
 def index():
     return "App is running"
@@ -84,6 +78,36 @@ def profile(user_id):
     conn.close()
 
     return render_template("profile.html", user=user)
+
+@app.route("/comment", methods=["GET", "POST"]) # Comment Vulnerable a SQL Injection, permite insertar comentarios sin sanitizar la entrada del usuario, lo que puede llevar a la ejecución de código malicioso o a la manipulación de la base de datos. Además, no hay control de acceso, lo que permite a cualquier usuario insertar comentarios.
+def comment():
+
+    if request.method == "POST":
+
+        comment = request.form["comment"]
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+        "INSERT INTO comments (text) VALUES (%s)",
+        (comment,)
+        )
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT text FROM comments")
+    comments = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("comment.html", comments=comments)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

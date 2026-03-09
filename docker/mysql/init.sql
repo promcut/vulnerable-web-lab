@@ -9,6 +9,11 @@ CREATE TABLE IF NOT EXISTS users (
     role VARCHAR(20) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    text TEXT
+);
+
 INSERT INTO users (id, username, password, role) VALUES
 (1,'admin','admin123','admin'),
 (2,'alice','pass123','user'),
