@@ -1,0 +1,7 @@
+<h2>Search Results:</h2>
+
+<ul>
+{% for user in user %}
+    <li>Username: {{ user[0] }}, Role: {{ user[1] }}</li>
+{% endfor %}
+</ul>

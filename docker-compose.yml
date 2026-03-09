@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_lab
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql  #copia tu SQL inicial (init.sql) dentro del contenedor para que MySQL lo ejecute al arrancar
+    ports:
+      - "3306:3306"
+
+  web:
+    build: ./app  # construye la imagen de Flask a partir del Dockerfile en app/
+    container_name: flask_lab
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: rootpass
+      DB_NAME: vulnerable_lab
+    depends_on:
+      - db

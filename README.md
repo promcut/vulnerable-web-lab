@@ -92,3 +92,5 @@ vulnerable-web-lab/
 ├── setup.sh            # Inicialización de DB, creación de usuarios
 └── README.md
 
+## * Para lanzar el proyecto
+docker-compose up --build
